@@ -6,116 +6,116 @@ import { createTableFromTurns, getEmptyTable } from './utils';
 
 
 class App extends Component {
-  state = {
-      turns: [],
-      xTurn: true,
-      tableState: getEmptyTable(),
-      gameEnded: false,
-  }
-
-  switchTurn(){
-      this.setState({xTurn: !this.state.xTurn}); 
-  }
-
-  resetTable() {
-      this.setState({
-        tableState: getEmptyTable(),
+    state = {
         turns: [],
-        gameEnded: false
-      });
-  }
-
-  onCellClick = (cellIndex, rowIndex) => {
-      let turns = this.state.turns;
-      let currentTurn = [];
-      const newState = this.state.tableState.map((row, i) => {
-          if (i === rowIndex) {
-              return row.map((cell, index) => {
-                  if (index === cellIndex && cell.value === '') {
-                      cell.value = this.currentPlayer();
-                      currentTurn = [[rowIndex, cellIndex, this.currentPlayer()]];
-                  };
-                  return cell;
-              });
-          };
-          return row;
-      });
-      if (this.state.tableState !== newState){    
-          this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
-              let [didWon, winningType] = this.validateTable();
-              if (didWon) {
-                  alert(`The player ${this.currentPlayer()} won! by a ${winningType} strick!`);
-                  this.setState({gameEnded: true})
-              }
-              
-          });
-          this.switchTurn();
-      }
-  }
-
-  onSnapshotClick = (snapIndex) => {
-    const turns = this.state.turns.slice(0, snapIndex + 1);
-    const tableState = createTableFromTurns(turns);
-    if (turns[snapIndex][2] === this.currentPlayer()) { // switch turn to the currect player.
-      this.switchTurn();
+        xTurn: true,
+        tableState: getEmptyTable(),
+        gameEnded: false,
     }
-    this.setState({turns, tableState, gameEnded: false});
-  }
 
-  currentPlayer() {
-      return this.state.xTurn ? 'X' : 'O';
-  }
+    switchTurn(){
+        this.setState({xTurn: !this.state.xTurn}); 
+    }
 
-  validateTable() {
-      const rows = this.state.tableState;
-      const columns = this.getColumns(rows);
-      const slants = this.getSlants(rows);
+    resetTable() {
+        this.setState({
+            tableState: getEmptyTable(),
+            turns: [],
+            gameEnded: false
+        });
+    }
 
-      switch(true) {
-          case rows.some(this.validateRow):
-              return [true, 'Row'];
-          case columns.some(this.validateRow):
-              return [true, 'Column'];
-          case slants.some(this.validateRow):
-              return [true, 'Slant'];
-          default:
-              return [false, ''];
-      }
-  }
+    onCellClick = (cellIndex, rowIndex) => {
+        let turns = this.state.turns;
+        let currentTurn = [];
+        const newState = this.state.tableState.map((row, i) => {
+            if (i === rowIndex) {
+                return row.map((cell, index) => {
+                    if (index === cellIndex && cell.value === '') {
+                        cell.value = this.currentPlayer();
+                        currentTurn = [[rowIndex, cellIndex, this.currentPlayer()]];
+                    };
+                    return cell;
+                });
+            };
+            return row;
+        });
+        if (this.state.tableState !== newState){    
+            this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
+                this.validateTable();
+                this.switchTurn();
+            });
+            
+        }
+    } 
 
-  validateRow(row) {
-      return row.every(cell => {
-          return row[0].value === cell.value && cell.value !== '';
-      })
-  }
+    onSnapshotClick = (snapIndex) => {
+        const turns = this.state.turns.slice(0, snapIndex + 1);
+        const tableState = createTableFromTurns(turns);
+        if (turns[snapIndex][2] === this.currentPlayer()) { // switch turn to the currect player.
+            this.switchTurn();
+        }
+        this.setState({turns, tableState, gameEnded: false});
+    }
 
-  getColumns(rows) {
-      return rows.map((_, index) => rows.map(row => row[index]));
-  }
+    currentPlayer() {
+        return this.state.xTurn ? 'X' : 'O';
+    }
 
-  getSlants(rows) {
-      return [rows.map((row, i) => row[i]), rows.map((row, i) => row[row.length - 1 - i])];
-  }
+    validateTable() {
+        const rows = this.state.tableState;
+        const columns = this.getColumns(rows);
+        const slants = this.getSlants(rows);
+        const someoneWon = rows.some(this.validateCombination) || columns.some(this.validateCombination) || slants.some(this.validateCombination);
+        const gameEnded =  this.isTableFull(rows) || someoneWon;
+        if (gameEnded) {
+            if (someoneWon) {
+                alert(`And the winner is: ${this.currentPlayer()}!`)
+            } else {
+                alert(`No on wons.. you both losers!`)
+            }
+            this.setState({gameEnded})
+        }
+        
+    }
 
-  
-  render() {
-    const {turns, tableState, gameEnded} = this.state;
-    return (
-      <div className="App">
-        <h1 className="turn-display">Current turn: {this.currentPlayer()}</h1>
-        <div className="board-container">
-          <Table 
-            withOverlay={gameEnded}
-            state={tableState}
-            onCellClick={this.onCellClick}/>
-          <TableHistory 
-            turns={turns} 
-            onSnapshotClick={this.onSnapshotClick} />
+    validateCombination(combination) {
+        return combination.every(cell => {
+            return combination[0].value === cell.value && cell.value !== '';
+        })
+    }
+
+    isTableFull(rows) {
+        return rows.every(row => row.every(cell => cell.value !== ''))
+    }
+
+    getColumns(rows) {
+        return rows.map((_, index) => rows.map(row => row[index]));
+    }
+
+    getSlants(rows) {
+        return [rows.map((row, i) => row[i]), rows.map((row, i) => row[row.length - 1 - i])];
+    }
+
+    
+    render() {
+        const {turns, tableState, gameEnded} = this.state;
+        return (
+        <div className="App">
+            <h1 className="turn-display">Current turn: {this.currentPlayer()}</h1>
+            <div className="board-container">
+            <Table 
+                withOverlay={gameEnded}
+                state={tableState}
+                onCellClick={this.onCellClick}/>
+            <TableHistory 
+                turns={turns} 
+                onSnapshotClick={this.onSnapshotClick} />
+            </div>
+            <button className="reset-button" onClick={() => this.resetTable()}>Reset game</button>
         </div>
-        <button className="reset-button" onClick={() => this.resetTable()}>Reset game</button>
-      </div>
-    );
-  }
+        );
+    }
 }
 
 export default App;
