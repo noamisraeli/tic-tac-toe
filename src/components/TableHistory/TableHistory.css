@@ -1,0 +1,8 @@
+
+.table-history-container {
+    min-width: 500px;
+    bottom: 15px;
+    left: 15px;
+    position: absolute;
+    text-align: left;
+}
