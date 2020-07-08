@@ -38,18 +38,15 @@ class App extends Component {
             };
             return row;
         });
-        if (this.state.tableState !== newState){    
-            this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
-                if (this.hasWon(newState)) {
-                    alert(`And the winner is: ${this.currentPlayer()}!`);
-                } else if (this.isTableFull(newState)) {
-                    alert(`No one wons.. you both losers!`);
-                } else {
-                    this.switchTurn()
-                }
-            });
-            
-        }
+        this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
+            if (this.hasWon(newState)) {
+                alert(`And the winner is: ${this.currentPlayer()}!`);
+            } else if (this.isTableFull(newState)) {
+                alert(`No one wons.. you both losers!`);
+            } else {
+                this.switchTurn()
+            }
+        });
     } 
 
     onSnapshotClick = (snapIndex) => {
