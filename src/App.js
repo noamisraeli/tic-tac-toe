@@ -13,14 +13,14 @@ class App extends Component {
         gameEnded: false
     };
 
-    state = initialState;
+    state = this.initialState;
 
     switchTurn(){
         this.setState({xTurn: !this.state.xTurn}); 
     }
 
     resetTable() {
-        this.setState(initialState);
+        this.setState(this.initialState);
     }
 
     onCellClick = (cellIndex, rowIndex) => {
@@ -40,8 +40,13 @@ class App extends Component {
         });
         if (this.state.tableState !== newState){    
             this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
-                this.validateTable();
-                this.switchTurn();
+                if (this.hasWon(newState)) {
+                    alert(`And the winner is: ${this.currentPlayer()}!`);
+                } else if (this.isTableFull(newState)) {
+                    alert(`No one wons.. you both losers!`);
+                } else {
+                    this.switchTurn()
+                }
             });
             
         }
@@ -59,22 +64,11 @@ class App extends Component {
     currentPlayer() {
         return this.state.xTurn ? 'X' : 'O';
     }
-
-    validateTable() {
-        const rows = this.state.tableState;
-        const columns = this.getColumns(rows);
+    
+    hasWon = (rows) => {
         const slants = this.getSlants(rows);
-        const someoneWon = rows.some(this.validateCombination) || columns.some(this.validateCombination) || slants.some(this.validateCombination);
-        const gameEnded =  this.isTableFull(rows) || someoneWon;
-        if (gameEnded) {
-            if (someoneWon) {
-                alert(`And the winner is: ${this.currentPlayer()}!`)
-            } else {
-                alert(`No one wons.. you both losers!`)
-            }
-            this.setState({gameEnded})
-        }
-        
+        const columns = this.getColumns(rows);
+        return rows.some(this.validateCombination) || columns.some(this.validateCombination) || slants.some(this.validateCombination);
     }
 
     validateCombination(combination) {
