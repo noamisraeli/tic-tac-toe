@@ -72,7 +72,7 @@ class App extends Component {
             if (someoneWon) {
                 alert(`And the winner is: ${this.currentPlayer()}!`)
             } else {
-                alert(`No on wons.. you both losers!`)
+                alert(`No one wons.. you both losers!`)
             }
             this.setState({gameEnded})
         }
