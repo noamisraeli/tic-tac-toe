@@ -4,14 +4,12 @@ import './Table.css'
 import { getEmptyTable } from '../../utils';
 
 
-const Table = (props) => {
-    const {
-        size = 300, 
-        state = getEmptyTable(), 
-        className = "board", 
-        onCellClick = () => null,
-        withOverlay = false
-    } = props;
+const Table = ({
+    size = 300, 
+    state = getEmptyTable(), 
+    className = "board", 
+    onCellClick = () => null,
+    withOverlay = false}) => {
     const overlay = withOverlay ? <div className="overlay"></div> : null;
 
     return (
