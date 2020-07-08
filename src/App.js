@@ -6,23 +6,21 @@ import { createTableFromTurns, getEmptyTable } from './utils';
 
 
 class App extends Component {
-    state = {
+    initialState = {
+        tableState: getEmptyTable(),
         turns: [],
         xTurn: true,
-        tableState: getEmptyTable(),
-        gameEnded: false,
-    }
+        gameEnded: false
+    };
+
+    state = initialState;
 
     switchTurn(){
         this.setState({xTurn: !this.state.xTurn}); 
     }
 
     resetTable() {
-        this.setState({
-            tableState: getEmptyTable(),
-            turns: [],
-            gameEnded: false
-        });
+        this.setState(initialState);
     }
 
     onCellClick = (cellIndex, rowIndex) => {
