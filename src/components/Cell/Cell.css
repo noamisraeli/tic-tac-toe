@@ -1,0 +1,29 @@
+.cell {
+    text-align: center;
+}
+
+.left {
+    border-right: 1px solid black;
+}
+
+.center {
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+}
+
+.right {
+    border-left: 1px solid black;
+}
+
+.top {
+    border-bottom: 1px solid black;
+}
+
+.middle {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.bottom {
+    border-top: 1px solid black;
+}
