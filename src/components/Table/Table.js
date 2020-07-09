@@ -26,7 +26,7 @@ const Table = ({
                                                 className={cell.className} 
                                                 value={cell.value}
                                                 size={size / row.length}
-                                                onCellClick={() => cell.value === '' ? onCellClick(i, rowIndex) : null} />;
+                                                onCellClick={() => onCellClick(cell, i, rowIndex)} />;
                                 })}
                             </tr>
                         )
