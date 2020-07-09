@@ -1,6 +1,6 @@
 import React from 'react';
-import Cell from '../Cell/Cell';
 import './Table.css';
+import Row from '../Row/Row';
 
 const Table = ({
     size = 300, 
@@ -9,24 +9,28 @@ const Table = ({
     onCellClick,
     withOverlay = false}) => {
     const overlay = withOverlay ? <div className="overlay"></div> : null;
-
     return (
         <div className="table-container">
             {overlay}
             <table className={className}>
                 <tbody>
                     {state.map((row, rowIndex) => {
+                        let verticalValue;
+                        if (rowIndex === 0) {
+                            verticalValue = 'top';
+                        } else if (rowIndex === state.length - 1) {
+                            verticalValue = 'bottom';
+                        } else {
+                            verticalValue = 'middle';
+                        }
                         return (
-                            <tr key={rowIndex}>
-                                {row.map((cell, i) => {
-                                    return <Cell 
-                                                key={i} 
-                                                className={cell.className} 
-                                                value={cell.value}
-                                                size={size / row.length}
-                                                onCellClick={() => onCellClick(cell, i, rowIndex)} />;
-                                })}
-                            </tr>
+                            <Row 
+                                key={rowIndex} 
+                                index={rowIndex}
+                                cells={row} 
+                                verticalValue={verticalValue}
+                                size={size}
+                                onCellClick={onCellClick}/>
                         )
                     })}
                 </tbody>
