@@ -1,14 +1,12 @@
 import React from 'react';
-import Cell from '../Cell/Cell'
-import './Table.css'
-import { getEmptyTable } from '../../utils';
-
+import Cell from '../Cell/Cell';
+import './Table.css';
 
 const Table = ({
     size = 300, 
-    state = getEmptyTable(), 
+    state, 
     className = "board", 
-    onCellClick = () => null,
+    onCellClick,
     withOverlay = false}) => {
     const overlay = withOverlay ? <div className="overlay"></div> : null;
 
