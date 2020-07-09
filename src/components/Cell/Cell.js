@@ -1,15 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import './Cell.css'
 
-export default class Cell extends Component {
-
-    render() {
-        return ( 
-        <td className={this.props.className} 
-            onClick={this.props.onCellClick} 
-            style={{width: this.props.size, height: this.props.size, fontSize: this.props.size / 2}}>
-            {this.props.value}
-        </td>
-        )
-    }
+const Cell = ({onCellClick, className, size, value}) => {
+    return ( 
+    <td className={className} 
+        onClick={onCellClick} 
+        style={{width: size, height: size, fontSize: size / 2}}>
+        {value}
+    </td>
+    )
 }
+
+export default Cell;
