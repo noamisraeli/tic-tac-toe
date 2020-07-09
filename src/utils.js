@@ -1,5 +1,4 @@
 const createTableFromTurns = (turns, numberOfCellsInRow) => {
-    console.log(JSON.stringify(turns))
     let newTable = getEmptyTable(numberOfCellsInRow);
     turns.forEach(turn => {
         newTable[turn.rowIndex][turn.cellIndex] = turn.currentPlayer;
