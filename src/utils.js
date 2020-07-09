@@ -1,15 +1,15 @@
-const createTableFromTurns = (turns) => {
-    let newTable = getEmptyTable();
+const createTableFromTurns = (turns, numberOfCellsInRow) => {
+    console.log(JSON.stringify(turns))
+    let newTable = getEmptyTable(numberOfCellsInRow);
     turns.forEach(turn => {
         newTable[turn.rowIndex][turn.cellIndex] = turn.currentPlayer;
     });
     return newTable; 
 }
 
-const getEmptyTable = (numberOfCellsInRow = 3) => {
+const getEmptyTable = (numberOfCellsInRow) => {
     return fillArray(fillArray('', numberOfCellsInRow), numberOfCellsInRow)
 }
-
 
 const fillArray = (value, len) => {
     let arr = [];
