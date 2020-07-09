@@ -3,7 +3,7 @@ import Table from '../Table/Table';
 import './TableHistory.css';
 import { createTableFromTurns } from '../../utils';
 
-const TableHistory = ({turns, onSnapshotClick}) => {
+const TableHistory = ({turns, onSnapshotClick, cellsInRow}) => {
     return (
         <div className="table-history-container">
             <h2>Game history:</h2>
@@ -11,7 +11,7 @@ const TableHistory = ({turns, onSnapshotClick}) => {
             <div className="table-history">
                 {turns.map((_, index) => {
                     const snapshotTurns = turns.slice(0, index + 1) 
-                    const tableSnapshot = createTableFromTurns(snapshotTurns)
+                    const tableSnapshot = createTableFromTurns(snapshotTurns, cellsInRow)
                     return (
                         <div 
                             key={index}

@@ -6,19 +6,19 @@ import { getEmptyTable } from './utils';
 
 
 class App extends Component {
-    getInitialState = () => {
+    getInitialState = (numberOfCellsInRow = 3) => {
         return {
-            tableState: getEmptyTable(),
+            tableState: getEmptyTable(numberOfCellsInRow),
             turns: [],
             gameOver: false,
             currentPlayer: 'X'
         }
     };
 
-    state = this.getInitialState();
+    state = this.getInitialState()
 
-    resetTable() {
-        this.setState(this.getInitialState());
+    resetTable(numberOfCellsInRow) {
+        this.setState(this.getInitialState(numberOfCellsInRow));
     }
 
     onCellClick = (cell, cellIndex, rowIndex) => {
@@ -94,6 +94,14 @@ class App extends Component {
         return [rows.map((row, i) => row[i]), rows.map((row, i) => row[row.length - 1 - i])];
     }
 
+    changeNumberOfCells() {
+        const numberOfCellsInRow = Number(prompt("Enter number of cells in row: ", 3));
+        if (isNaN(numberOfCellsInRow) || numberOfCellsInRow <= 2) {
+            alert("Stupid user! put a number higher than 2 !@!@!@")
+            return;
+        }
+        this.resetTable(numberOfCellsInRow);
+    }
     
     render() {
         const {turns, tableState, gameOver, currentPlayer} = this.state;
@@ -106,10 +114,12 @@ class App extends Component {
                 state={tableState}
                 onCellClick={this.onCellClick}/>
             <TableHistory 
+                cellsInRow={tableState.length}
                 turns={turns} 
                 onSnapshotClick={this.onSnapshotClick} />
             </div>
-            <button className="reset-button" onClick={() => this.resetTable()}>Reset game</button>
+            <button className="reset-button" onClick={() => this.resetTable(tableState.length)}>Reset game</button>
+            <button className="reset-button" onClick={() => this.changeNumberOfCells()}>Change size of board</button>
         </div>
         );
     }
