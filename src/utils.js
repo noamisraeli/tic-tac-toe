@@ -1,15 +1,26 @@
-export function createTableFromTurns(turns) {
+const createTableFromTurns = (turns) => {
     let newTable = getEmptyTable();
     turns.forEach(turn => {
-        newTable[turn.rowIndex][turn.cellIndex].value = turn.currentPlayer;
+        newTable[turn.rowIndex][turn.cellIndex] = turn.currentPlayer;
     });
     return newTable; 
 }
 
-export function getEmptyTable() {
-    return [
-        [{value: "", className: "cell left top"}, {value: "", className: "cell center top"}, {value: "", className: "cell right top"}],
-        [{value: "", className: "cell left medium"}, {value: "", className: "cell center medium"}, {value: "", className: "cell right medium"}],
-        [{value: "", className: "cell left bottom"}, {value: "", className: "cell center bottom"}, {value: "", className: "cell right bottom"}],
-    ]
+const getEmptyTable = (numberOfCellsInRow = 3) => {
+    return fillArray(fillArray('', numberOfCellsInRow), numberOfCellsInRow)
 }
+
+
+const fillArray = (value, len) => {
+    let arr = [];
+    for (let i = 0; i < len; i++) {
+        let newValue = value;
+        if (Array.isArray(value)) {
+            newValue = Object.assign([], value);
+        }
+        arr.push(newValue);
+    }
+    return arr;
+}
+
+export {getEmptyTable, createTableFromTurns}

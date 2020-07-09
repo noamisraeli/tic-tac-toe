@@ -22,7 +22,7 @@ class App extends Component {
     }
 
     onCellClick = (cell, cellIndex, rowIndex) => {
-        if (cell.value !== '') {
+        if (cell !== '') {
             return
         }
         let isGameOver = false;
@@ -31,10 +31,10 @@ class App extends Component {
         const currentTurn = {rowIndex, cellIndex, currentPlayer};
         
         const turns = this.state.turns.slice();
-        const newTableState = this.state.tableState.slice();
+        let newTableState = this.state.tableState.slice();
 
-        newTableState[rowIndex][cellIndex].value = currentPlayer;
-
+        newTableState[rowIndex][cellIndex] = currentPlayer;
+        
         if (this.hasWon(newTableState)) {
             alert(`And the winner is: ${currentPlayer}!`);
             isGameOver = true;
@@ -78,12 +78,12 @@ class App extends Component {
 
     validateCombination(combination) {
         return combination.every(cell => {
-            return combination[0].value === cell.value && cell.value !== '';
+            return combination[0] === cell && cell !== '';
         })
     }
 
     isTableFull(rows) {
-        return rows.every(row => row.every(cell => cell.value !== ''))
+        return rows.every(row => row.every(cell => cell !== ''))
     }
 
     getColumns(rows) {
