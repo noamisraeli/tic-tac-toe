@@ -4,7 +4,6 @@ import './TableHistory.css';
 import { createTableFromTurns } from '../../utils';
 
 const TableHistory = ({turns, onSnapshotClick}) => {
-    console.log(turns);
     return (
         <div className="table-history-container">
             <h2>Game history:</h2>
