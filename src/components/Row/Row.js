@@ -2,7 +2,7 @@ import React from 'react';
 import Cell from '../Cell/Cell';
 
 
-const Row = ({index, cells, verticalValue, size, onCellClick}) => {
+const Row = ({index, cells, verticalValue, size, onCellClick = () => null}) => {
     return (
         <tr>
             {cells.map((cell, cellIndex) => {
