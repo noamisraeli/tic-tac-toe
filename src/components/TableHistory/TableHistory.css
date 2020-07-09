@@ -1,6 +1,7 @@
 
 .table-history-container {
     min-width: 500px;
+    max-height: 300px;
     bottom: 15px;
     left: 15px;
     position: absolute;
