@@ -2,64 +2,72 @@ import React, { Component } from 'react';
 import './App.css';
 import Table from './components/Table/Table'
 import TableHistory from './components/TableHistory/TableHistory';
-import { createTableFromTurns, getEmptyTable } from './utils';
+import { getEmptyTable } from './utils';
 
 
 class App extends Component {
-    initialState = {
-        tableState: getEmptyTable(),
-        turns: [],
-        xTurn: true,
-        gameEnded: false
+    getInitialState = () => {
+        return {
+            tableState: getEmptyTable(),
+            turns: [],
+            gameOver: false,
+            currentPlayer: 'X'
+        }
     };
 
-    state = this.initialState;
-
-    switchTurn(){
-        this.setState({xTurn: !this.state.xTurn}); 
-    }
+    state = this.getInitialState();
 
     resetTable() {
-        this.setState(this.initialState);
+        this.setState(this.getInitialState());
     }
 
-    onCellClick = (cellIndex, rowIndex) => {
-        let turns = this.state.turns;
-        let currentTurn = [];
-        const newState = this.state.tableState.map((row, i) => {
-            if (i === rowIndex) {
-                return row.map((cell, index) => {
-                    if (index === cellIndex && cell.value === '') {
-                        cell.value = this.currentPlayer();
-                        currentTurn = [[rowIndex, cellIndex, this.currentPlayer()]];
-                    };
-                    return cell;
-                });
-            };
-            return row;
-        });
-        this.setState({tableState: newState, turns: turns.concat(currentTurn)}, () => {
-            if (this.hasWon(newState)) {
-                alert(`And the winner is: ${this.currentPlayer()}!`);
-            } else if (this.isTableFull(newState)) {
-                alert(`No one wons.. you both losers!`);
-            } else {
-                this.switchTurn()
-            }
+    onCellClick = (cell, cellIndex, rowIndex) => {
+        if (cell.value !== '') {
+            return
+        }
+        let isGameOver = false;
+        
+        const currentPlayer = this.state.currentPlayer;
+        const currentTurn = {rowIndex, cellIndex, currentPlayer};
+        
+        const turns = this.state.turns.slice();
+        const newTableState = this.state.tableState.slice();
+
+        newTableState[rowIndex][cellIndex].value = currentPlayer;
+
+        if (this.hasWon(newTableState)) {
+            alert(`And the winner is: ${currentPlayer}!`);
+            isGameOver = true;
+        } else if (this.isTableFull(newTableState)) {
+            alert(`No one wons.. you both losers!`);
+            isGameOver = true;
+        }
+
+        this.setState({
+            tableState: newTableState, 
+            turns: turns.concat(currentTurn),
+            gameOver: isGameOver,
+            currentPlayer: this.getNextPlayer(currentPlayer)
         });
     } 
 
-    onSnapshotClick = (snapIndex) => {
-        const turns = this.state.turns.slice(0, snapIndex + 1);
-        const tableState = createTableFromTurns(turns);
-        if (turns[snapIndex][2] === this.currentPlayer()) { // switch turn to the currect player.
-            this.switchTurn();
+    onSnapshotClick = (tableSnapshot, snapshotTurns) => {
+        const currentPlayer = this.state.currentPlayer;
+        let nextPlayer = currentPlayer;
+        const lastTurnInSnapshot = snapshotTurns[snapshotTurns.length - 1];
+        if (lastTurnInSnapshot.currentPlayer === this.state.currentPlayer) {
+            nextPlayer = this.getNextPlayer(this.state.currentPlayer)
         }
-        this.setState({turns, tableState, gameEnded: false});
+        this.setState({
+            turns: snapshotTurns, 
+            tableState: tableSnapshot, 
+            gameOver: false,
+            currentPlayer: nextPlayer
+        });
     }
 
-    currentPlayer() {
-        return this.state.xTurn ? 'X' : 'O';
+    getNextPlayer(currentPlayer) {
+        return currentPlayer === 'X' ? 'O' : 'X';
     }
     
     hasWon = (rows) => {
@@ -88,13 +96,13 @@ class App extends Component {
 
     
     render() {
-        const {turns, tableState, gameEnded} = this.state;
+        const {turns, tableState, gameOver, currentPlayer} = this.state;
         return (
         <div className="App">
-            <h1 className="turn-display">Current turn: {this.currentPlayer()}</h1>
+            <h1 className="turn-display">Current turn: {currentPlayer}</h1>
             <div className="board-container">
             <Table 
-                withOverlay={gameEnded}
+                withOverlay={gameOver}
                 state={tableState}
                 onCellClick={this.onCellClick}/>
             <TableHistory 
