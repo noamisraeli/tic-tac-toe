@@ -1,7 +1,7 @@
 export function createTableFromTurns(turns) {
-    let newTable = getEmptyTable()
+    let newTable = getEmptyTable();
     turns.forEach(turn => {
-        newTable[turn[0]][turn[1]].value = turn[2]
+        newTable[turn.rowIndex][turn.cellIndex].value = turn.currentPlayer;
     });
     return newTable; 
 }
